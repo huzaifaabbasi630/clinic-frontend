@@ -2,10 +2,15 @@ import api from './api';
 
 export const patientService = {
   getAll: async () => {
-    const response = await api.get('/patients');
-    // Backend returns { success: true, data: patients[] }
-    const patients = response.data || [];
-    return patients.map(p => ({ ...p, id: p._id }));
+    try {
+      const response = await api.get('/patients');
+      // Backend returns { success: true, data: patients[] }
+      const patients = response.data || response || [];
+      return Array.isArray(patients) ? patients.map(p => ({ ...p, id: p._id })) : [];
+    } catch (error) {
+      console.error('Error in patientService.getAll:', error);
+      throw error;
+    }
   },
   
   getById: async (id) => {
