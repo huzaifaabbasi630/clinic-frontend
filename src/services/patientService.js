@@ -3,7 +3,7 @@ import api from './api';
 export const patientService = {
   getAll: async () => {
     try {
-      const response = await api.get('/patients');
+      const response = await api.get('/patients?limit=1000');
       // Backend returns { success: true, data: patients[] }
       const patients = response.data || response || [];
       return Array.isArray(patients) ? patients.map(p => ({ ...p, id: p._id })) : [];

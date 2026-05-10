@@ -28,14 +28,31 @@ const BookAppointment = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const [patientsRes, usersRes] = await Promise.all([
-                    patientService.getAll(),
-                    authService.getAll()
-                ]);
-                setPatients(patientsRes);
-                setDoctors(usersRes.filter(u => u.role === 'doctor'));
+                
+                // Fetch patients and users separately to identify which one fails
+                let patientsList = [];
+                let doctorsList = [];
+
+                try {
+                    patientsList = await patientService.getAll();
+                } catch (err) {
+                    console.error('Error fetching patients:', err);
+                    toast.error('Failed to load patients list');
+                }
+
+                try {
+                    const users = await authService.getAll();
+                    doctorsList = Array.isArray(users) ? users.filter(u => u.role === 'doctor') : [];
+                } catch (err) {
+                    console.error('Error fetching doctors:', err);
+                    toast.error('Failed to load doctors list');
+                }
+
+                setPatients(patientsList);
+                setDoctors(doctorsList);
             } catch (error) {
-                toast.error('Failed to load patients or doctors');
+                console.error('Global fetch error:', error);
+                toast.error('An unexpected error occurred while loading data');
             } finally {
                 setLoading(false);
             }
@@ -45,13 +62,18 @@ const BookAppointment = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!formData.patientId || !formData.doctorId) {
+            return toast.error('Please select both a patient and a doctor');
+        }
+
         setSubmitting(true);
         try {
             await appointmentService.create(formData);
             toast.success('Appointment booked successfully!');
             navigate('/receptionist/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Failed to book appointment');
+            toast.error(error?.toString() || 'Failed to book appointment');
         } finally {
             setSubmitting(false);
         }
@@ -75,7 +97,10 @@ const BookAppointment = () => {
                             name="patientId"
                             value={formData.patientId}
                             onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-                            options={patients.map(p => ({ value: p.id, label: p.name }))}
+                            options={patients.length > 0 ? patients.map(p => ({ 
+                                value: p.id || p._id, 
+                                label: `${p.name} (${p.contact})` 
+                            })) : [{ value: '', label: 'No patients found' }]}
                             required
                         />
                         <FormInput
@@ -84,7 +109,10 @@ const BookAppointment = () => {
                             name="doctorId"
                             value={formData.doctorId}
                             onChange={(e) => setFormData({ ...formData, doctorId: e.target.value })}
-                            options={doctors.map(d => ({ value: d._id, label: d.name }))}
+                            options={doctors.length > 0 ? doctors.map(d => ({ 
+                                value: d._id || d.id, 
+                                label: d.name 
+                            })) : [{ value: '', label: 'No doctors found' }]}
                             required
                         />
                     </div>
