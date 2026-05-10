@@ -58,14 +58,14 @@ const PatientProfile = () => {
 
             <div className="card" style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', alignItems: 'center' }}>
                 <div style={{ width: '100px', height: '100px', borderRadius: '50%', backgroundColor: 'var(--primary-blue)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 700 }}>
-                    {patient.name?.split(' ').map(n => n[0]).join('')}
+                    {patient.name?.split(' ').map(n => n[0]).join('') || 'P'}
                 </div>
                 <div>
-                    <h2 style={{ margin: 0 }}>{patient.name}</h2>
-                    <p style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>ID: PAT-{patient.id} | Age: {patient.age} | Gender: {patient.gender}</p>
+                    <h2 style={{ margin: 0 }}>{patient.name || 'Unknown'}</h2>
+                    <p style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>ID: {patient._id} | Age: {patient.age || 'N/A'} | Gender: {patient.gender || 'N/A'}</p>
                     <div style={{ display: 'flex', gap: '1rem' }}>
                         <span style={{ fontSize: '0.875rem' }}><strong>Blood:</strong> {patient.bloodGroup || 'N/A'}</span>
-                        <span style={{ fontSize: '0.875rem' }}><strong>Contact:</strong> {patient.contact}</span>
+                        <span style={{ fontSize: '0.875rem' }}><strong>Contact:</strong> {patient.contact || 'N/A'}</span>
                     </div>
                 </div>
             </div>

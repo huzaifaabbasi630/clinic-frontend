@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MdSave, MdGroup } from 'react-icons/md';
 import FormInput from '../../components/FormInput';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import { patientService } from '../../services/patientService';
+import { authService } from '../../services/authService';
+import { appointmentService } from '../../services/appointmentService';
+import Loader from '../../components/Loader';
 
 const BookAppointment = () => {
     const [formData, setFormData] = useState({
@@ -11,16 +15,49 @@ const BookAppointment = () => {
         date: '',
         time: '',
         reason: '',
-        status: 'Pending'
+        status: 'Scheduled'
     });
 
+    const [patients, setPatients] = useState([]);
+    const [doctors, setDoctors] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [submitting, setSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const [patientsRes, usersRes] = await Promise.all([
+                    patientService.getAll(),
+                    authService.getAll()
+                ]);
+                setPatients(patientsRes);
+                setDoctors(usersRes.filter(u => u.role === 'doctor'));
+            } catch (error) {
+                toast.error('Failed to load patients or doctors');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        toast.success('Appointment booked successfully!');
-        navigate('/receptionist/dashboard');
+        setSubmitting(true);
+        try {
+            await appointmentService.create(formData);
+            toast.success('Appointment booked successfully!');
+            navigate('/receptionist/dashboard');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Failed to book appointment');
+        } finally {
+            setSubmitting(false);
+        }
     };
+
+    if (loading) return <Loader />;
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
@@ -38,10 +75,7 @@ const BookAppointment = () => {
                             name="patientId"
                             value={formData.patientId}
                             onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-                            options={[
-                                { value: '1', label: 'John Doe' },
-                                { value: '2', label: 'Jane Smith' }
-                            ]}
+                            options={patients.map(p => ({ value: p.id, label: p.name }))}
                             required
                         />
                         <FormInput
@@ -50,10 +84,7 @@ const BookAppointment = () => {
                             name="doctorId"
                             value={formData.doctorId}
                             onChange={(e) => setFormData({ ...formData, doctorId: e.target.value })}
-                            options={[
-                                { value: '1', label: 'Dr. Sarah Smith' },
-                                { value: '2', label: 'Dr. James Wilson' }
-                            ]}
+                            options={doctors.map(d => ({ value: d._id, label: d.name }))}
                             required
                         />
                     </div>
@@ -87,8 +118,13 @@ const BookAppointment = () => {
                         required
                     />
 
-                    <button type="submit" className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', padding: '0.875rem 2rem' }}>
-                        <MdSave size={20} /> Schedule Appointment
+                    <button 
+                        type="submit" 
+                        className="btn-primary" 
+                        disabled={submitting}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '1rem', padding: '0.875rem 2rem' }}
+                    >
+                        <MdSave size={20} /> {submitting ? 'Scheduling...' : 'Schedule Appointment'}
                     </button>
                 </form>
             </div>

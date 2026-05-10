@@ -22,11 +22,8 @@ const ReceptionistDashboard = () => {
                     appointments: Array.isArray(appointments) ? appointments.length : 0
                 });
 
-                // Mocking real data look
-                setRecentQueue(Array.isArray(appointments) && appointments.length > 0 ? appointments : [
-                    { name: 'John Doe', doctor: 'Dr. Sarah', time: '10:30 AM', status: 'Waiting' },
-                    { name: 'Jane Smith', doctor: 'Dr. James', time: '10:45 AM', status: 'Completed' },
-                ]);
+                // Real data from appointments
+                setRecentQueue(Array.isArray(appointments) ? appointments : []);
             } catch (error) {
                 console.error('Error fetching receptionist stats:', error);
             }
