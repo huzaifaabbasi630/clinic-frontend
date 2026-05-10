@@ -47,13 +47,13 @@ const ManageAppointments = () => {
                     fontSize: '0.75rem',
                     fontWeight: 600,
                     backgroundColor:
-                        row.status === 'Confirmed' || row.status === 'Scheduled' ? 'rgba(37, 99, 235, 0.1)' :
-                            row.status === 'Completed' ? 'rgba(16, 185, 129, 0.1)' :
-                                row.status === 'Cancelled' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                        ['Confirmed', 'confirmed', 'Scheduled', 'scheduled'].includes(row.status) ? 'rgba(37, 99, 235, 0.1)' :
+                            ['Completed', 'completed'].includes(row.status) ? 'rgba(16, 185, 129, 0.1)' :
+                                ['Cancelled', 'cancelled'].includes(row.status) ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
                     color:
-                        row.status === 'Confirmed' || row.status === 'Scheduled' ? 'var(--primary-blue)' :
-                            row.status === 'Completed' ? 'var(--success)' :
-                                row.status === 'Cancelled' ? 'var(--error)' : '#f59e0b'
+                        ['Confirmed', 'confirmed', 'Scheduled', 'scheduled'].includes(row.status) ? 'var(--primary-blue)' :
+                            ['Completed', 'completed'].includes(row.status) ? 'var(--success)' :
+                                ['Cancelled', 'cancelled'].includes(row.status) ? 'var(--error)' : '#f59e0b'
                 }}>
                     {row.status}
                 </span>

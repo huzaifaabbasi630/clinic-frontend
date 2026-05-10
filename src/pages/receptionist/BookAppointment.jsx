@@ -15,7 +15,7 @@ const BookAppointment = () => {
         date: '',
         time: '',
         reason: '',
-        status: 'Scheduled'
+        status: 'confirmed'
     });
 
     const [patients, setPatients] = useState([]);
