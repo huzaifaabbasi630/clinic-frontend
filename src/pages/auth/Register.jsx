@@ -90,7 +90,7 @@ const Register = () => {
                         options={[
                             { value: 'receptionist', label: 'Receptionist' },
                             { value: 'doctor', label: 'Doctor' },
-                            { value: 'admin', label: 'Administrator' }
+                            { value: 'admin', label: 'Admin' }
                         ]}
                         required
                     />

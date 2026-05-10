@@ -11,6 +11,7 @@ const MyAppointments = () => {
     const [appointments, setAppointments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [filterDate, setFilterDate] = useState(new Date().toISOString().split('T')[0]);
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -28,10 +29,13 @@ const MyAppointments = () => {
         fetchAppointments();
     }, []);
 
-    const filteredAppointments = appointments.filter(appt =>
-        appt?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        appt?.patient?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredAppointments = appointments.filter(appt => {
+        const matchesSearch = appt?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             appt?.patient?.toLowerCase().includes(searchTerm.toLowerCase());
+        const apptDate = new Date(appt.date).toISOString().split('T')[0];
+        const matchesDate = apptDate === filterDate;
+        return matchesSearch && matchesDate;
+    });
 
     if (loading) return <Loader />;
 
@@ -45,15 +49,16 @@ const MyAppointments = () => {
             </div>
 
             <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
-                <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)' }}>
+                <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border-color)', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                     <div style={{
+                        flex: 1,
                         display: 'flex',
                         alignItems: 'center',
                         backgroundColor: 'var(--bg-light)',
                         padding: '0.5rem 1rem',
                         borderRadius: '8px',
                         border: '1px solid var(--border-color)',
-                        maxWidth: '400px'
+                        minWidth: '250px'
                     }}>
                         <MdSearch color="var(--text-muted)" />
                         <input
@@ -62,6 +67,21 @@ const MyAppointments = () => {
                             style={{ border: 'none', background: 'transparent', width: '100%', outline: 'none', paddingLeft: '0.5rem' }}
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        backgroundColor: 'var(--bg-light)',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border-color)'
+                    }}>
+                        <input
+                            type="date"
+                            style={{ border: 'none', background: 'transparent', outline: 'none', color: 'var(--text-muted)', fontWeight: 500 }}
+                            value={filterDate}
+                            onChange={(e) => setFilterDate(e.target.value)}
                         />
                     </div>
                 </div>

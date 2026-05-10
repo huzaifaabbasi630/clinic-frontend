@@ -75,4 +75,12 @@ export const patientService = {
       return { success: true };
     }
   },
+  getHistory: async (id) => {
+    try {
+      const response = await api.get(`/patients/${id}/history`);
+      return response?.data || response;
+    } catch (err) {
+      return { timeline: [], appointments: [], prescriptions: [], diagnosisLogs: [] };
+    }
+  },
 };

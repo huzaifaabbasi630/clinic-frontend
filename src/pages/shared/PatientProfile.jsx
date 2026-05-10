@@ -11,18 +11,27 @@ const PatientProfile = () => {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('Overview');
     const [patient, setPatient] = useState(null);
+    const [historyData, setHistoryData] = useState({ appointments: [], prescriptions: [], timeline: [] });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchPatient = async () => {
+        const fetchPatientData = async () => {
             try {
                 setLoading(true);
-                const data = await patientService.getById(id);
-                if (data) {
-                    setPatient(data);
+                const [patientRes, historyRes] = await Promise.all([
+                    patientService.getById(id),
+                    patientService.getHistory(id)
+                ]);
+
+                if (patientRes) {
+                    setPatient(patientRes);
                 } else {
                     toast.error('Patient not found');
                     navigate('/patients');
+                }
+
+                if (historyRes) {
+                    setHistoryData(historyRes);
                 }
             } catch (error) {
                 toast.error('Error fetching patient data');
@@ -30,17 +39,8 @@ const PatientProfile = () => {
                 setLoading(false);
             }
         };
-        fetchPatient();
+        fetchPatientData();
     }, [id, navigate]);
-
-    const history = [
-        { date: '2024-02-15', doctor: 'Dr. Sarah', reason: 'Fever', status: 'Completed' },
-        { date: '2024-01-10', doctor: 'Dr. James', reason: 'Back Pain', status: 'Completed' },
-    ];
-
-    const prescriptions = [
-        { date: '2024-02-15', medicine: 'Paracetamol', dosage: '1-0-1', duration: '3 days' },
-    ];
 
     const tabs = ['Overview', 'Appointment History', 'Prescription History', 'Diagnosis Timeline'];
 
@@ -114,7 +114,12 @@ const PatientProfile = () => {
                             { header: 'Reason', key: 'reason' },
                             { header: 'Status', key: 'status' }
                         ]}
-                        data={history}
+                        data={historyData.appointments.map(a => ({
+                            date: new Date(a.date).toLocaleDateString(),
+                            doctor: a.doctorId?.name || 'N/A',
+                            reason: a.reason || 'Checkup',
+                            status: a.status
+                        }))}
                     />
                 )}
 
@@ -126,7 +131,12 @@ const PatientProfile = () => {
                             { header: 'Dosage', key: 'dosage' },
                             { header: 'Duration', key: 'duration' }
                         ]}
-                        data={prescriptions}
+                        data={historyData.prescriptions.map(p => ({
+                            date: new Date(p.createdAt).toLocaleDateString(),
+                            medicine: p.medicines.map(m => m.name).join(', '),
+                            dosage: p.medicines.map(m => m.dosage).join(', '),
+                            duration: p.instructions || 'N/A'
+                        }))}
                     />
                 )}
 
@@ -134,17 +144,20 @@ const PatientProfile = () => {
                     <div className="card">
                         <div style={{ position: 'relative', paddingLeft: '2rem', marginTop: '1rem' }}>
                             <div style={{ position: 'absolute', left: '0', top: '0', bottom: '0', width: '2px', backgroundColor: 'var(--border-color)' }}></div>
-                            {[
-                                { date: 'Feb 15, 2024', title: 'Viral Fever', desc: 'Patient presented high temperature and headache.' },
-                                { date: 'Jan 10, 2024', title: 'Routine Checkup', desc: 'Blood pressure within normal range.' }
-                            ].map((item, i) => (
+                            {historyData.timeline.length > 0 ? historyData.timeline.map((item, i) => (
                                 <div key={i} style={{ position: 'relative', marginBottom: '2rem' }}>
                                     <div style={{ position: 'absolute', left: '-2.4rem', top: '0.2rem', width: '12px', height: '12px', borderRadius: '50%', backgroundColor: 'var(--primary-blue)', border: '3px solid white' }}></div>
-                                    <p style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600, margin: 0 }}>{item.date}</p>
-                                    <h5 style={{ margin: '0.25rem 0' }}>{item.title}</h5>
-                                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>{item.desc}</p>
+                                    <p style={{ fontSize: '0.75rem', color: 'var(--primary-blue)', fontWeight: 600, margin: 0 }}>{new Date(item.date).toLocaleDateString()}</p>
+                                    <h5 style={{ margin: '0.25rem 0', textTransform: 'capitalize' }}>{item.type}: {item.data?.reason || item.data?.instructions || 'Medical Entry'}</h5>
+                                    <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>
+                                        {item.type === 'prescription' ? `Medicines: ${item.data.medicines.map(m => m.name).join(', ')}` : 
+                                         item.type === 'appointment' ? `Doctor: ${item.data.doctorId?.name || 'N/A'} | Status: ${item.data.status}` : 
+                                         `Diagnosis result: ${item.data.aiResponse?.analysis || 'Logged'}`}
+                                    </p>
                                 </div>
-                            ))}
+                            )) : (
+                                <p style={{ color: 'var(--text-muted)' }}>No medical history found for this patient.</p>
+                            )}
                         </div>
                     </div>
                 )}

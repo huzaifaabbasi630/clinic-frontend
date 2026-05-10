@@ -131,12 +131,6 @@ const Login = () => {
                     </Link>
                 </div>
 
-                <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(37, 99, 235, 0.05)', borderRadius: '8px', fontSize: '0.8rem' }}>
-                    <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>Demo Credentials:</p>
-                    <p>Admin: admin@hospital.com / admin123</p>
-                    <p>Doctor: doctor@hospital.com / doctor123</p>
-                    <p>Receptionist: rec@hospital.com / rec123</p>
-                </div>
             </div>
         </div>
     );
