@@ -16,14 +16,14 @@ const ManageDoctors = () => {
             const users = await authService.getAll();
             const doctorList = Array.isArray(users) ? users.filter(u => u.role === 'doctor') : [];
 
-            // Add mock fields for display if they don't exist
-            const formattedDoctors = doctorList.map((d, i) => ({
-                id: d.id || i,
+            const formattedDoctors = doctorList.map((d) => ({
+                id: d._id || d.id,
                 name: d.name,
-                specializations: d.specialization || 'General Physician',
-                experience: d.experience || '5+ years',
-                rating: 4.5 + (Math.random() * 0.5),
-                status: 'Available'
+                email: d.email,
+                specializations: d.specialization || 'Medical Specialist',
+                experience: d.experience || 'Not specified',
+                rating: 5.0,
+                status: 'Active'
             }));
 
             setDoctors(formattedDoctors);
