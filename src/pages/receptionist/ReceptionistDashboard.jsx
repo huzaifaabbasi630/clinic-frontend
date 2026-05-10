@@ -66,6 +66,14 @@ const ReceptionistDashboard = () => {
                             { header: 'Status', key: 'status' }
                         ]}
                         data={recentQueue}
+                        actions={(row) => (
+                            <button
+                                onClick={() => navigate(`/patient/${row.patientRealId}`)}
+                                style={{ background: 'none', border: 'none', color: 'var(--primary-blue)', cursor: 'pointer', fontWeight: 600, fontSize: '0.875rem' }}
+                            >
+                                View
+                            </button>
+                        )}
                     />
                 </div>
 

@@ -128,7 +128,7 @@ const MyAppointments = () => {
                                 <MdAssignment size={14} /> Treat
                             </button>
                             <button
-                                onClick={() => navigate(`/patient/${row.id}`)}
+                                onClick={() => navigate(`/patient/${row.patientRealId}`)}
                                 style={{
                                     background: 'none',
                                     color: 'var(--primary-blue)',

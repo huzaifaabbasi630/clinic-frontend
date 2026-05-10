@@ -8,6 +8,7 @@ export const appointmentService = {
         ...a, 
         id: a._id,
         patient: a.patientId?.name || 'Unknown',
+        patientRealId: a.patientId?._id || a.patientId,
         doctor: a.doctorId?.name || 'N/A'
     }));
   },
