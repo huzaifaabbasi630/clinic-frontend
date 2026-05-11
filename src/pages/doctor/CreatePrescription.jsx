@@ -114,6 +114,13 @@ const CreatePrescription = () => {
                         <MdSmartToy /> AI Assistant
                     </button>
                     <button
+                        className="btn-secondary"
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', border: '1px solid var(--border-color)', background: 'white' }}
+                        onClick={() => window.print()}
+                    >
+                        <MdPrint /> Print
+                    </button>
+                    <button
                         className="btn-primary"
                         style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem' }}
                         onClick={handleSave}
@@ -127,15 +134,12 @@ const CreatePrescription = () => {
             <div className="grid" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem' }}>
                 <div className="card">
                     <h4 style={{ marginBottom: '1.5rem' }}>Patient Details</h4>
-                    <FormInput
-                        label="Select Patient"
-                        type="select"
-                        name="patientId"
-                        value={patientId}
-                        onChange={(e) => setPatientId(e.target.value)}
-                        options={patients.map(p => ({ value: p.id.toString(), label: p.name }))}
-                        required
-                    />
+                    <div style={{ marginBottom: '1rem', padding: '0.75rem', backgroundColor: 'var(--bg-light)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem', display: 'block', marginBottom: '0.25rem' }}>Patient Name</span>
+                        <strong style={{ fontSize: '1.1rem' }}>
+                            {location.state?.patientName || patients.find(p => p.id.toString() === patientId)?.name || 'Unknown Patient'}
+                        </strong>
+                    </div>
                     <FormInput
                         label="Initial Diagnosis"
                         type="textarea"
@@ -219,6 +223,47 @@ const CreatePrescription = () => {
                             placeholder="e.g. Drink plenty of water, avoid cold items..."
                         />
                     </div>
+                </div>
+            </div>
+
+            {/* Print Only Section for 4x4 inch layout */}
+            <div id="print-section" className="print-only">
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid black', paddingBottom: '8px', marginBottom: '12px' }}>
+                    <div>
+                        <h2 style={{ margin: 0, fontSize: '1.2rem', fontFamily: 'serif' }}>{location.state?.patientName || patients.find(p => p.id.toString() === patientId)?.name || 'Patient'}</h2>
+                    </div>
+                    <div style={{ textAlign: 'right', fontSize: '0.8rem' }}>
+                        <div>Date: {new Date().toLocaleDateString()}</div>
+                        {/* Additional patient info could go here */}
+                    </div>
+                </div>
+                
+                <div style={{ marginBottom: '12px' }}>
+                    <strong style={{ display: 'block', marginBottom: '4px', textDecoration: 'underline' }}>Initial Diagnoses:</strong>
+                    <div style={{ paddingLeft: '8px' }}>{diagnosis || 'None'}</div>
+                </div>
+
+                <div style={{ marginBottom: '12px' }}>
+                    <strong style={{ display: 'block', marginBottom: '4px', textDecoration: 'underline' }}>Medicines:</strong>
+                    <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                        {medicines.map((med, idx) => (med.name ? (
+                            <li key={idx} style={{ marginBottom: '4px' }}>
+                                <strong>{med.name}</strong> - {med.dosage}
+                                {med.notes && <div style={{ fontSize: '0.7rem', color: '#333' }}>Note: {med.notes}</div>}
+                            </li>
+                        ) : null))}
+                    </ul>
+                </div>
+
+                {advice && (
+                    <div style={{ marginTop: 'auto', borderTop: '1px dashed #ccc', paddingTop: '8px' }}>
+                        <strong style={{ display: 'block', marginBottom: '4px' }}>General Advice:</strong>
+                        <div style={{ fontStyle: 'italic', paddingLeft: '8px' }}>{advice}</div>
+                    </div>
+                )}
+                
+                <div style={{ position: 'absolute', bottom: '0', width: '100%', textAlign: 'center', fontSize: '0.7rem', color: '#666', borderTop: '1px solid #eee', paddingTop: '4px' }}>
+                    Hospital Management System - Doctor's Prescription
                 </div>
             </div>
         </div>

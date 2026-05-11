@@ -27,7 +27,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         ],
         doctor: [
             { path: '/doctor/dashboard', icon: <MdDashboard />, label: 'Dashboard' },
-            { path: '/patients', icon: <MdPeople />, label: 'Patients' },
             { path: '/doctor/prescription', icon: <MdAssignment />, label: 'Prescription' },
             { path: '/doctor/appointments', icon: <MdEvent />, label: 'My Appointments' },
         ],

@@ -114,3 +114,39 @@ input:focus, select:focus, textarea:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
+
+/* Print Styles for 4x4 inch Prescription */
+@media print {
+  @page {
+    size: 4in 4in;
+    margin: 0.15in;
+  }
+  
+  body * {
+    visibility: hidden;
+  }
+  
+  #print-section, #print-section * {
+    visibility: visible;
+  }
+  
+  #print-section {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-size: 0.75rem; /* Make font smaller for 4x4 */
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+@media screen {
+  .print-only {
+    display: none !important;
+  }
+}
