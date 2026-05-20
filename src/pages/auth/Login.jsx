@@ -36,16 +36,15 @@ const Login = () => {
                 throw new Error("No response from server");
             }
 
-            const userData = data.user || data.userData || (data.token ? data : null);
-            const token = data.token;
+            const userData = data.user || data.userData || data;
 
-            if (!userData || !token) {
-                console.error("Incomplete login response:", data);
+            if (!userData) {
+                console.error("Incomplete login response");
                 throw new Error("Invalid response format from server");
             }
 
             // Update Context
-            login(userData, token);
+            login(userData);
             toast.success('Login successful!');
 
             // The useEffect will handle the redirection automatically 

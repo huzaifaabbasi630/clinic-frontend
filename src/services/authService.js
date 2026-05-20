@@ -3,12 +3,10 @@ import api from './api';
 export const authService = {
     login: async (credentials) => {
         const response = await api.post('/auth/login', credentials);
-        // Standardizing response: API returns { _id, name, email, role, subscriptionPlan, token }
-        if (response && response.token) {
-            const { token, ...userData } = response;
+        // Response is the user data now (token is handled via HTTP-only cookie)
+        if (response && response._id) {
             return {
-                user: userData,
-                token: token
+                user: response
             };
         }
         return response;
@@ -16,6 +14,10 @@ export const authService = {
 
     register: async (userData) => {
         return await api.post('/auth/register', userData);
+    },
+
+    logout: async () => {
+        return await api.post('/auth/logout');
     },
     
     getAll: async () => {

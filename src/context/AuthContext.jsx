@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../services/api';
 
 const AuthContext = createContext();
 
@@ -9,31 +10,33 @@ export const AuthProvider = ({ children }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Check for stored token and user info
-        try {
-            const storedUser = localStorage.getItem('hospital_user');
-            const token = localStorage.getItem('hospital_token');
-
-            if (storedUser && storedUser !== "undefined" && token && token !== "undefined") {
-                setUser(JSON.parse(storedUser));
-            } else {
-                // Clean up if any corrupted data exists
-                if (storedUser === "undefined" || token === "undefined") {
-                    localStorage.removeItem('hospital_user');
-                    localStorage.removeItem('hospital_token');
+        // Fetch logged-in user profile on load to verify cookie auth
+        const loadUser = async () => {
+            try {
+                const userData = await api.get('/auth/me');
+                if (userData) {
+                    const normalizedUser = {
+                        ...userData,
+                        role: (userData.role || 'staff').toLowerCase()
+                    };
+                    setUser(normalizedUser);
+                } else {
+                    setUser(null);
                 }
+            } catch (error) {
+                // Not authenticated or session expired
+                setUser(null);
+            } finally {
+                setLoading(false);
             }
-        } catch (error) {
-            console.error("Auth initialization error:", error);
-            localStorage.removeItem('hospital_user');
-            localStorage.removeItem('hospital_token');
-        }
-        setLoading(false);
+        };
+
+        loadUser();
     }, []);
 
-    const login = (userData, token) => {
-        if (!userData || !token) {
-            console.error("Invalid login data received", { userData, token });
+    const login = (userData) => {
+        if (!userData) {
+            console.error("Invalid login data received");
             return;
         }
 
@@ -44,15 +47,17 @@ export const AuthProvider = ({ children }) => {
         };
 
         setUser(normalizedUser);
-        localStorage.setItem('hospital_user', JSON.stringify(normalizedUser));
-        localStorage.setItem('hospital_token', token);
     };
 
-    const logout = () => {
-        setUser(null);
-        localStorage.removeItem('hospital_user');
-        localStorage.removeItem('hospital_token');
-        navigate('/login');
+    const logout = async () => {
+        try {
+            await api.post('/auth/logout');
+        } catch (error) {
+            console.error("Logout API error");
+        } finally {
+            setUser(null);
+            navigate('/login');
+        }
     };
 
     return (
