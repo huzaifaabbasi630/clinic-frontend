@@ -117,7 +117,7 @@ const PatientProfile = () => {
                         data={historyData.appointments.map(a => ({
                             date: new Date(a.date).toLocaleDateString(),
                             doctor: a.doctorId?.name || 'N/A',
-                            reason: a.reason || 'Checkup',
+                            reason: a.reason || a.notes || 'N/A',
                             status: a.status
                         }))}
                     />
