@@ -257,93 +257,144 @@ const CreatePrescription = () => {
                 </div>
             </div>
 
-            {/* Print Only Section */}
-            <div id="print-section" className="print-only">
-                <div style={{ textAlign: 'center', marginBottom: '10px', borderBottom: '2px solid #000', paddingBottom: '10px' }}>
-                    <h2 style={{ margin: 0, fontFamily: 'serif' }}>Hospital Management System</h2>
-                    <p style={{ margin: 0, fontSize: '0.9rem', color: '#555' }}>Doctor's Prescription & Patient Record</p>
-                </div>
-                
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '0.85rem' }}>
-                    <div style={{ width: '48%' }}>
-                        <strong>Patient:</strong> {selectedPatient?.name || 'Unknown Patient'}<br/>
-                        <strong>Age/Gender:</strong> {selectedPatient?.age || 'N/A'} / {selectedPatient?.gender || 'N/A'}<br/>
-                        <strong>Contact:</strong> {selectedPatient?.contact || 'N/A'}<br/>
-                        <strong>Blood Group:</strong> {selectedPatient?.bloodGroup || 'N/A'}
+            {/* Print Only Section - Professional A4 Medical Report */}
+            <div id="print-section" className="print-only" style={{ fontFamily: 'Arial, sans-serif', color: '#000', background: '#fff', padding: '0' }}>
+
+                {/* ══════════ HOSPITAL HEADER ══════════ */}
+                <div style={{ textAlign: 'center', borderBottom: '2px solid #2e7d5e', paddingBottom: '12px', marginBottom: '10px' }}>
+                    <div style={{ fontSize: '22pt', fontWeight: '700', color: '#2e7d5e', letterSpacing: '1px', fontFamily: 'Georgia, serif' }}>
+                        ♡ MediCare Pro
                     </div>
-                    <div style={{ width: '48%', textAlign: 'right' }}>
-                        <strong>Date:</strong> {new Date().toLocaleDateString()}<br/>
-                        <strong>Email:</strong> {selectedPatient?.email || 'N/A'}<br/>
-                        <strong>Address:</strong> {selectedPatient?.address || 'N/A'}<br/>
-                        <strong>Emg. Contact:</strong> {selectedPatient?.emergencyContact || 'N/A'}
+                    <div style={{ fontSize: '9pt', color: '#555', marginTop: '2px' }}>
+                        123 Health Avenue, Medical City | Tel: +92-300-0000000 | info@medicare-pro.com
                     </div>
-                </div>
-                
-                <div style={{ marginBottom: '12px', padding: '8px', background: '#f9f9f9', border: '1px solid #ddd' }}>
-                    <strong style={{ display: 'block', marginBottom: '4px' }}>Current Diagnosis:</strong>
-                    <div>{diagnosis || 'None'}</div>
                 </div>
 
-                <div style={{ marginBottom: '12px' }}>
-                    <strong style={{ display: 'block', marginBottom: '4px', borderBottom: '1px solid #ccc', paddingBottom: '2px' }}>Prescribed Medicines:</strong>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                        <thead>
-                            <tr style={{ borderBottom: '1px solid #ccc', textAlign: 'left' }}>
-                                <th style={{ padding: '4px' }}>Medicine</th>
-                                <th style={{ padding: '4px' }}>Dosage</th>
-                                <th style={{ padding: '4px' }}>Notes</th>
-                            </tr>
-                        </thead>
+                {/* ══════════ MEDICAL REPORT TITLE ══════════ */}
+                <div style={{ textAlign: 'center', marginBottom: '14px' }}>
+                    <h2 style={{ fontSize: '16pt', fontWeight: '800', letterSpacing: '3px', margin: 0, color: '#111' }}>MEDICAL REPORT</h2>
+                </div>
+
+                {/* ══════════ VISIT INFO ══════════ */}
+                <div className="print-section-block" style={{ marginBottom: '10px' }}>
+                    <div style={{ color: '#2e7d5e', fontWeight: '700', fontSize: '11pt', marginBottom: '5px', borderBottom: '1px solid #2e7d5e', paddingBottom: '2px' }}>
+                        Visit Info
+                    </div>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10pt' }}>
                         <tbody>
-                            {medicines.map((med, idx) => (med.name ? (
-                                <tr key={idx} style={{ borderBottom: '1px dashed #eee' }}>
-                                    <td style={{ padding: '4px' }}><strong>{med.name}</strong></td>
-                                    <td style={{ padding: '4px' }}>{med.dosage}</td>
-                                    <td style={{ padding: '4px' }}>{med.notes}</td>
-                                </tr>
-                            ) : null))}
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0', width: '25%' }}><strong>Doctor's Name:</strong></td>
+                                <td style={{ padding: '2px 0', width: '35%' }}>Dr. (Attending Physician)</td>
+                                <td style={{ padding: '2px 8px 2px 0', width: '18%' }}><strong>Visit Date:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{new Date().toLocaleDateString('en-GB').replace(/\//g, '.')}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Specialization:</strong></td>
+                                <td style={{ padding: '2px 0' }}>General Medicine</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
 
+                {/* ══════════ PATIENT INFO ══════════ */}
+                <div className="print-section-block" style={{ marginBottom: '10px' }}>
+                    <div style={{ color: '#2e7d5e', fontWeight: '700', fontSize: '11pt', marginBottom: '5px', borderBottom: '1px solid #2e7d5e', paddingBottom: '2px' }}>
+                        Patient Info
+                    </div>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10pt' }}>
+                        <tbody>
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0', width: '22%' }}><strong>Full Name:</strong></td>
+                                <td style={{ padding: '2px 0', width: '28%' }}>{selectedPatient?.name || 'N/A'}</td>
+                                <td style={{ padding: '2px 8px 2px 0', width: '22%' }}><strong>Age / Gender:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{selectedPatient?.age || 'N/A'} / {selectedPatient?.gender || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Blood Group:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{selectedPatient?.bloodGroup || 'N/A'}</td>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Phone:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{selectedPatient?.contact || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Email:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{selectedPatient?.email || 'N/A'}</td>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Emg. Contact:</strong></td>
+                                <td style={{ padding: '2px 0' }}>{selectedPatient?.emergencyContact || 'N/A'}</td>
+                            </tr>
+                            <tr>
+                                <td style={{ padding: '2px 8px 2px 0' }}><strong>Address:</strong></td>
+                                <td colSpan={3} style={{ padding: '2px 0' }}>{selectedPatient?.address || 'N/A'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* ══════════ DIAGNOSIS / ASSESSMENT ══════════ */}
+                <div className="print-section-block" style={{ marginBottom: '10px' }}>
+                    <div style={{ color: '#2e7d5e', fontWeight: '700', fontSize: '11pt', marginBottom: '5px', borderBottom: '1px solid #2e7d5e', paddingBottom: '2px' }}>
+                        Diagnosis
+                    </div>
+                    <p style={{ margin: 0, fontSize: '10pt', lineHeight: '1.5' }}>
+                        {diagnosis || 'No diagnosis provided.'}
+                    </p>
+                </div>
+
+                {/* ══════════ PRESCRIPTION ══════════ */}
+                <div className="print-section-block" style={{ marginBottom: '10px' }}>
+                    <div style={{ color: '#2e7d5e', fontWeight: '700', fontSize: '11pt', marginBottom: '5px', borderBottom: '1px solid #2e7d5e', paddingBottom: '2px' }}>
+                        Prescription
+                    </div>
+                    {medicines.filter(m => m.name).length > 0 ? (
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '9.5pt' }}>
+                            <thead>
+                                <tr style={{ background: '#f0f7f4' }}>
+                                    <th style={{ padding: '4px 6px', textAlign: 'left', border: '1px solid #ccc', width: '30%' }}>Medicine</th>
+                                    <th style={{ padding: '4px 6px', textAlign: 'left', border: '1px solid #ccc', width: '30%' }}>Dosage</th>
+                                    <th style={{ padding: '4px 6px', textAlign: 'left', border: '1px solid #ccc' }}>Notes / Instructions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {medicines.map((med, idx) => med.name ? (
+                                    <tr key={idx}>
+                                        <td style={{ padding: '4px 6px', border: '1px solid #ddd', fontWeight: '600' }}>{med.name}</td>
+                                        <td style={{ padding: '4px 6px', border: '1px solid #ddd' }}>{med.dosage || '—'}</td>
+                                        <td style={{ padding: '4px 6px', border: '1px solid #ddd' }}>{med.notes || '—'}</td>
+                                    </tr>
+                                ) : null)}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p style={{ margin: 0, fontSize: '10pt' }}>No prescription required at this time.</p>
+                    )}
+                </div>
+
+                {/* ══════════ GENERAL ADVICE ══════════ */}
                 {advice && (
-                    <div style={{ marginBottom: '12px' }}>
-                        <strong style={{ display: 'block', marginBottom: '4px' }}>General Advice:</strong>
-                        <div style={{ fontStyle: 'italic', fontSize: '0.85rem' }}>{advice}</div>
+                    <div className="print-section-block" style={{ marginBottom: '10px' }}>
+                        <div style={{ color: '#2e7d5e', fontWeight: '700', fontSize: '11pt', marginBottom: '5px', borderBottom: '1px solid #2e7d5e', paddingBottom: '2px' }}>
+                            General Advice
+                        </div>
+                        <p style={{ margin: 0, fontSize: '10pt', lineHeight: '1.5', fontStyle: 'italic' }}>{advice}</p>
                     </div>
                 )}
-                
-                {patientHistory && (
-                    <div style={{ marginTop: '15px', borderTop: '2px dashed #ccc', paddingTop: '10px', fontSize: '0.8rem' }}>
-                        <h4 style={{ margin: '0 0 8px 0' }}>Patient History</h4>
-                        
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                            <div style={{ flex: 1 }}>
-                                <strong style={{ borderBottom: '1px solid #ccc', display: 'block', marginBottom: '4px' }}>Past Appointments</strong>
-                                {patientHistory.appointments?.slice(0, 3).map((apt, i) => (
-                                    <div key={i} style={{ marginBottom: '4px' }}>
-                                        • {new Date(apt.date).toLocaleDateString()}: {apt.reason || apt.checkup || 'Checkup'} ({apt.status})
-                                    </div>
-                                ))}
-                                {!patientHistory.appointments?.length && <div>No recent appointments</div>}
-                            </div>
-                            
-                            <div style={{ flex: 1 }}>
-                                <strong style={{ borderBottom: '1px solid #ccc', display: 'block', marginBottom: '4px' }}>Past Prescriptions</strong>
-                                {patientHistory.prescriptions?.slice(0, 3).map((rx, i) => (
-                                    <div key={i} style={{ marginBottom: '4px' }}>
-                                        • {new Date(rx.date || rx.createdAt).toLocaleDateString()}: {rx.diagnosis}
-                                    </div>
-                                ))}
-                                {!patientHistory.prescriptions?.length && <div>No recent prescriptions</div>}
-                            </div>
+
+                {/* ══════════ SIGNATURE ══════════ */}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '18px', marginBottom: '10px' }}>
+                    <div style={{ textAlign: 'center', minWidth: '160px' }}>
+                        <div style={{ borderTop: '1px solid #333', paddingTop: '4px', fontSize: '9pt', color: '#444' }}>
+                            Authorized Signature
                         </div>
                     </div>
-                )}
-                
-                <div style={{ marginTop: '20px', textAlign: 'center', fontSize: '0.7rem', color: '#666', borderTop: '1px solid #eee', paddingTop: '4px' }}>
-                    Generated on {new Date().toLocaleString()}
                 </div>
+
+                {/* ══════════ FOOTER ══════════ */}
+                <div style={{ borderTop: '1px solid #ccc', paddingTop: '6px', textAlign: 'center', fontSize: '8pt', color: '#666' }}>
+                    <div>For inquiries and appointments, feel free to contact us.</div>
+                    <div>Phone: +92-300-0000000 | Email: info@medicare-pro.com | www.medicare-pro.com</div>
+                </div>
+
             </div>
 
             {/* Patient Info Modal */}
